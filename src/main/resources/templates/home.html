@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="layout/main.html">
+
+      <div class = "container mt-3" layout:fragment="mainContent">
+          <div class = "container-fluid d-flex align-content-around flex-wrap">
+              <div class="card" style="width: 18rem;" th:each = "tsk:${tasks}">
+                  <div class="card-body">
+                      <label class="m-auto" th:if="${tsk.handled==true}" style="color: green">Обработанная заявка</label>
+                      <label class="m-auto" th:if="${tsk.handled==false}" style="color: darkred">Необработанная заявка</label>
+                      <br>
+                      Request from: <h5 class="card-title" th:text = "${tsk.getUserName()}"></h5>
+                      Course name: <h6 class="card-subtitle mb-2 text-muted"
+                                       th:text = "${tsk.course.getCourseName() + '/' + tsk.course.getPrice()}"></h6>
+                      Comment section: <p class="card-text" th:text = "${tsk.getCommentary()}"></p>
+                      Phone number: <a href="#" class="card-link" th:text = "${tsk.getPhone()}"></a>
+                      Course name: <a th:href = "@{'/details/' + ${tsk.getId()}}" class="card-link">Tap to see more</a>
+                  </div>
+              </div>
+          </div>
+      </div>
+  </div>
+</body>
+</html>

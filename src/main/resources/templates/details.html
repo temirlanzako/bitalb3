@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="layout/main.html">
+
+    <div class="row" layout:fragment="mainContent">
+        <div class="col-6 mx-auto" th:if="${task!=null}">
+                <input type="hidden" th:value="${task.id}" name="id">
+                <label class="m-auto" th:if="${task.handled==false}" style="color: red">***Новая необработанная
+                    заявка***</label>
+                <label class="m-auto" th:if="${task.handled==true}" style="color: green">Обработанная заявка</label>
+                <div class="row mt-3">
+                    <div class="col-12">
+                        <label>ФИО : </label>
+                    </div>
+                </div>
+                <div class="row mt-2">
+                    <div class="col-12">
+                        <input type="text" disabled class="form-control" placeholder="ФИО" name="userName"
+                               th:value="${task.getUserName()}">
+                    </div>
+                </div>
+                <div class="row mt-3">
+                    <div class="col-12">
+                        <label>КУРС : </label>
+                    </div>
+                </div>
+                <div class="row mt-2">
+                    <div class="col-12">
+                        <input type="text" disabled class="form-control" placeholder="Курс" name="courseName"
+                               th:value="${task.course.getCourseName() + '/' + task.course.getPrice()}">
+                    </div>
+                </div>
+                <div class="row mt-3">
+                    <div class="col-12">
+                        <label>ТЕЛЕФОН : </label>
+                    </div>
+                </div>
+                <div class="row mt-2">
+                    <div class="col-12">
+                        <input type="number" disabled class="form-control" placeholder="+7(7__)_______" name="phone"
+                               th:value="${task.phone}">
+                    </div>
+                </div>
+                <div class="row mt-3">
+                    <div class="col-12">
+                        <label>КОММЕНТАРИИ : </label>
+                    </div>
+                </div>
+                <div class="row mt-2">
+                    <div class="col-12">
+                        <textarea type="text" disabled class="form-control" placeholder="Комментарии" name="commentary"
+                                  th:text="${task.getCommentary()}"></textarea>
+                    </div>
+                </div>
+
+                <div class="row mt-3">
+                    <div class="col-12" th:if="${task.handled==false}">
+                        <button class="btn btn-primary" data-bs-target="#exampleModalToggle3" data-bs-toggle="modal">Обработать заявку</button>
+                        <div class="modal fade" id="exampleModalToggle3" aria-hidden="true" aria-labelledby="exampleModalToggleLabel" tabindex="-1">
+                            <div class="modal-dialog modal-dialog-centered">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h1 class="modal-title fs-5" id="exampleModalToggleLabel3">Attention</h1>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <table class = "table table-striped">
+                                            <thead>
+                                                <td></td>
+                                                <td>ID</td>
+                                                <td>NAME</td>
+                                                <td>SURNAME</td>
+                                                <td>DEPARTMENT</td>
+                                            </thead>
+                                            <tr th:each="opr : ${operators}">
+                                                <td>
+                                                    <form th:action="@{'/update'}" method="post">
+                                                    <input class="form-check-input" name="yes" type="checkbox"
+                                                           th:value="${opr.getId()}">
+                                                </td>
+                                                <td th:text = "${opr.getId()}"></td>
+                                                <td th:text = "${opr.getName()}"></td>
+                                                <td th:text = "${opr.getSurname()}"></td>
+                                                <td th:text = "${opr.getDepartment()}"></td>
+                                            </tr>
+                                        </table>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type = "button" class = "btn btn-secondary" data-bs-dismiss="modal">CLose</button>
+
+                            <input type = "hidden" name = "id" th:value="${task.getId()}">
+                            <button class="btn btn-success">Назначить</button>
+                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                            <button class="btn btn-primary" data-bs-target="#exampleModalToggle2" data-bs-toggle="modal">Удалить</button>
+                        <div class="modal fade" id="exampleModalToggle2" aria-hidden="true" aria-labelledby="exampleModalToggleLabel" tabindex="-1">
+                            <div class="modal-dialog modal-dialog-centered">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h1 class="modal-title fs-5" id="exampleModalToggleLabel2">Attention</h1>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                    </div>
+                                    <div class="modal-body">
+                                        Are you sure that you want to delete this task
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type = "button" class = "btn btn-secondary" data-bs-dismiss="modal">CLose</button>
+                                        <form th:action = "@{'/delete'}"  method="post">
+                                            <input type ="hidden" th:value="${task.getId()}" name="id">
+                                            <button class="btn btn-primary" data-bs-target="#exampleModalToggle2"
+                                                    data-bs-toggle="modal">Delete</button>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                    <div class="col-12" th:if="${task.handled==true}">
+                        <table class = "table table-striped">
+                            <thead>
+                                <td></td>
+                                <td>ID</td>
+                                <td>NAME</td>
+                                <td>SURNAME</td>
+                                <td>DEPARTMENT</td>
+                            </thead>
+                                <form th:action = "@{'/remove'}" method = "post">
+                            <tr th:each = "tsk:${task.getOperators()}">
+                                <input type = "hidden" name = "id" th:value="${task.getId()}">
+                                <input type = "hidden" name = "OperatorId" th:value="${tsk.getId()}">
+                                <td>
+                                    <button class = "btn btn-danger"></button>
+                                </td>
+                                <td th:text = "${tsk.id}"></td>
+                                <td th:text = "${tsk.getName()}"></td>
+                                <td th:text = "${tsk.getSurname()}"></td>
+                                <td th:text = "${tsk.getDepartment()}"></td>
+                            </tr>
+                                </form>
+                        </table>
+                        <button class="btn btn-primary" data-bs-target="#exampleModalToggle" data-bs-toggle="modal">Удалить</button>
+                        <div class="modal fade" id="exampleModalToggle" aria-hidden="true" aria-labelledby="exampleModalToggleLabel" tabindex="-1">
+                            <div class="modal-dialog modal-dialog-centered">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h1 class="modal-title fs-5" id="exampleModalToggleLabel">Attention</h1>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                    </div>
+                                    <div class="modal-body">
+                                        Are you sure that you want to delete this task
+                                    </div>
+                                        <div class="modal-footer">
+                                            <button type = "button" class = "btn btn-secondary" data-bs-dismiss="modal">CLose</button>
+                                            <form th:action = "@{'/delete'}"  method="post">
+                                                <input type ="hidden" th:value="${task.getId()}" name="id">
+                                                <button class="btn btn-primary" data-bs-target="#exampleModalToggle2"
+                                                        data-bs-toggle="modal">Delete</button>
+                                            </form>
+                                        </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+    </div>
+</div>
+</div>
+</html>
